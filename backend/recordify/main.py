@@ -36,10 +36,11 @@ def api_upsert_tag(uid: str, body: TagUpsert):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    upsert_tag(uid, body.spotify_uri, body.label)
-    return {"Saved!": True, "uid": uid}
+    upsert_tag(uid, uri, body.label)
+    kind = uri.split(":")[1]
+    return {"Saved!": True, "uid": uid, "uri" : uri, "playlist/track" : kind, "body.label": body.label}
 
-    
+      
 
 
 #backend test endpoints

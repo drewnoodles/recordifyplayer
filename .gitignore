@@ -1,7 +1,10 @@
 __pycache__/
 *.pyc
 
+venv/
 .venv/
 
 backend/data/*.db
 .DS_store
+
+.env
