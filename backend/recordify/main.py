@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from recordify.db import init_db, upsert_tag, get_tag, get_all_tags
 from recordify.spotify_utils import normalize_spotify_input
+from recordify.spotify_player import play_track_uri
+from fastapi import HTTPException
+from recordify.spotify_player import now_playing
 
 
 app = FastAPI()
@@ -40,8 +43,21 @@ def api_upsert_tag(uid: str, body: TagUpsert):
     kind = uri.split(":")[1]
     return {"Saved!": True, "uid": uid, "uri" : uri, "playlist/track" : kind, "body.label": body.label}
 
-      
+@app.post("/api/play/{uid}")
+def play_by_uid(uid: str):
+    tag = get_tag(uid)
+    if tag is None:
+        raise HTTPException(status_code=404, detail="UID not found")
 
+    try:
+        play_track_uri(tag["spotify_uri"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return {"Playing!": True, "uid": uid, "uri" : tag["spotify_uri"], "label" : tag["label"]}
+
+@app.get("/api/now_playing")
+def api_now_playing():
+    return now_playing()
 
 #backend test endpoints
 @app.get("/")

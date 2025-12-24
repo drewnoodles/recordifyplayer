@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from recordify.spotify_player import play_track_uri
 
 load_dotenv()
 
@@ -40,12 +41,13 @@ def main():
         devices[0]["id"]
     )
 
-    #test playback control
-    uri = "spotify:track:6rqhFgq5ry86uytFyKwI9W"  # Example track URI
-    print(f"\nPlaying track with URI: {uri} and on device with id: {device_id}")
-    sp.start_playback(device_id=device_id, uris=[uri])
-    print("Playback started successfully!")
+    if __name__ == "__main__":
+        play_track_uri("spotify:track:5WbfFTuIldjL9x7W6y5l7R")
+        print("Playing track and its so sick!")
 
-    __name__ == "__main__"
+
+
 main()
+
+
 
