@@ -5,12 +5,28 @@ from recordify.spotify_utils import normalize_spotify_input
 from recordify.spotify_player import play_track_uri
 from fastapi import HTTPException
 from recordify.spotify_player import now_playing
+from fastapi.middleware.cors import CORSMiddleware 
 
 
 app = FastAPI()
+
 @app.on_event("startup")
 def startup():
     init_db()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5175",     # your React dev server
+        "http://localhost:5173",     # common vite port
+        "http://127.0.0.1:5175",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 #pydantic model for tag, spotify_uri responds with uri of track, msg if needed
