@@ -6,6 +6,10 @@ from recordify.spotify_player import play_track_uri
 from fastapi import HTTPException
 from recordify.spotify_player import now_playing
 from fastapi.middleware.cors import CORSMiddleware 
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 app = FastAPI()

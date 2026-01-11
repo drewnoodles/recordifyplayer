@@ -1,0 +1,384 @@
+:root {
+  --paper: #f7f1e3;
+  --ink: #2b1d16;
+  --orange: #e07a3f;
+  --rust: #b04a2f;
+  --teal: #3f7c7a;
+
+  --card: rgba(255, 255, 255, 0.65);
+  --border: rgba(43, 29, 22, 0.16);
+  --shadow: rgba(43, 29, 22, 0.18);
+
+  --radius: 18px;
+  --gap: 16px;
+  --maxw: 980px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+    sans-serif;
+}
+
+/* Page wrapper */
+.mcm-page {
+  min-height: 100vh;
+  width: 100%;
+  padding: 28px 16px 60px;
+  position: relative;
+}
+
+/* Paper grain texture overlay (pure CSS) */
+
+.mcm-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* IMPORTANT: make sure it sits behind the cards but above the paper */
+  z-index: 0;
+
+  background-repeat: no-repeat;
+  background-position: right 60px top 210px; /* tweak if you want */
+  background-size: 2400px 1800px;
+  opacity: 0.55;
+
+  /* your orange arch SVG */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720' viewBox='0 0 720 720'%3E%3Cg fill='none' stroke='%23B04A2F' stroke-linecap='round'%3E%3Cpath d='M560 170a170 170 0 0 0-340 0' stroke-width='16'/%3E%3Cpath d='M540 170a150 150 0 0 0-300 0' stroke-width='16'/%3E%3Cpath d='M520 170a130 130 0 0 0-260 0' stroke-width='16'/%3E%3Cpath d='M500 170a110 110 0 0 0-220 0' stroke-width='14'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* THIS is the actual flip */
+  transform: scaleY(-1);
+
+  /* we need to flip around the center so it stays in place */
+  transform-origin: center;
+}
+
+/* Center content and keep it above the overlay */
+.mcm-container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  width: min(100%, var(--maxw));
+  position: relative;
+ z-index: 1;
+}
+.mcm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+/* Mid-century “card” */
+.mcm-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 26px rgba(43, 29, 22, 0.20);
+  padding: 18px;
+  position: relative;
+}
+
+
+
+/* subtle “corner stamp” detail (mid-century vibe) */
+.mcm-card::after {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--orange);
+  opacity: 0.55;
+}
+
+/* Simple header style */
+.mcm-title {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 0.3px;
+}
+
+.mcm-subtitle {
+  margin: 6px 0 0;
+  opacity: 0.8;
+}
+
+.mcm-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--ink);
+  font: inherit;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  box-shadow: 0 8px 18px rgba(43, 29, 22, 0.16);
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.mcm-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(43, 29, 22, 0.20);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.mcm-btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 6px 14px rgba(43, 29, 22, 0.14);
+}
+
+.mcm-btn-primary {
+  border-color: rgba(176, 74, 47, 0.45);
+  background: linear-gradient(180deg, var(--orange) 0%, var(--rust) 100%);
+  color: #fff;
+}
+
+.mcm-btn-primary:hover {
+  background: linear-gradient(180deg, #ee8648 0%, #c45735 100%);
+}
+
+.mcm-btn:disabled,
+.mcm-btn.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 6px 14px rgba(43, 29, 22, 0.10);
+}
+/* =========================
+   Mid-century arch background (NO gradients)
+   ========================= */
+
+/* Give the page a little more “design” without images */
+.mcm-page {
+  overflow: hidden; /* keeps background shapes from causing scrollbars */
+}
+
+/* This layer draws the rounded “rainbow arch lines” using an SVG (not a gradient) */
+.mcm-page::after {
+    
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background-repeat: no-repeat;
+  background-position: left -160px bottom -140px;
+  background-size:1640px 1220px;
+  opacity: 0.25;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='820' height='820' viewBox='0 0 820 820'%3E%3Cg fill='none' stroke='%233F7C7A' stroke-linecap='round'%3E%3Cpath d='M260 580a200 200 0 0 1 400 0' stroke-width='18'/%3E%3Cpath d='M280 580a180 180 0 0 1 360 0' stroke-width='18'/%3E%3Cpath d='M300 580a160 160 0 0 1 320 0' stroke-width='18'/%3E%3Cpath d='M320 580a140 140 0 0 1 280 0' stroke-width='16'/%3E%3C/g%3E%3C/svg%3E");
+
+  
+}
+
+
+/* =========================
+   Buttons (NO gradients)
+   ========================= */
+.mcm-btn-primary {
+  border-color: rgba(176, 74, 47, 0.55);
+  background: var(--orange); /* solid color */
+  color: #fff;
+}
+.mcm-btn-primary:hover {
+  background: #ee8648; /* solid hover */
+}
+
+/* =========================
+   Turntable / Vinyl
+   ========================= */
+
+/* =========================
+   Turntable / Vinyl (bigger + correct layering)
+   ========================= */
+
+.turntable {
+  width: 320px;
+  height: 260px;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+/* Keep vinyl ALWAYS visible; only animation toggles */
+.vinyl {
+  width: 240px;
+  height: 240px;
+  border-radius: 999px;
+  position: relative;
+
+  background: #14110f;
+  border: 2px solid rgba(43, 29, 22, 0.30);
+  box-shadow: 0 18px 34px rgba(43, 29, 22, 0.18);
+  z-index: 1;
+
+  /* makes sure the arm can be above it */
+}
+
+/* Groove rings (more realistic: multiple subtle rings) */
+.vinyl::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 999px;
+
+  /* lots of rings using inset shadows */
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,0.06),
+    inset 0 0 0 10px rgba(255,255,255,0.04),
+    inset 0 0 0 20px rgba(255,255,255,0.03),
+    inset 0 0 0 34px rgba(255,255,255,0.022),
+    inset 0 0 0 52px rgba(255,255,255,0.018),
+    inset 0 0 0 74px rgba(255,255,255,0.014);
+}
+
+/* A faint highlight to make it feel more “physical” (still no gradients) */
+.vinyl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.02);
+  clip-path: ellipse(35% 45% at 35% 25%);
+}
+
+/* Album label */
+.vinyl__label {
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255,255,255,0.12);
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 2;
+}
+
+.vinyl__label img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vinyl__fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+}
+
+/* Center hole */
+.vinyl__hole {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #f7f1e3;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border: 1px solid rgba(43, 29, 22, 0.35);
+  z-index: 3;
+}
+
+/* Spin only when playing */
+.vinyl.is-spinning {
+  animation: spin 2.2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Tonearm (goes ABOVE the record) --- */
+.arm {
+  position: absolute;
+
+  /* anchor at turntable center */
+  left: 50%;
+  top: 50%;
+
+  width: 220px;
+  height: 220px;
+
+  /* REST position: parked to the RIGHT side, not on the vinyl */
+  transform: translate(-160px, 70px) rotate(-95deg);
+
+  /* pivot near base circle */
+  transform-origin: 28px 28px;
+
+  transition: transform 950ms ease;
+
+  z-index: 999;
+  pointer-events: none;
+}
+
+/* PLAY position: swing onto record */
+.arm.is-on {
+  transform: translate(-160px, 70px) rotate(-12deg);
+}
+
+.arm__base {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #6b625b;
+  border: 2px solid rgba(43, 29, 22, 0.35);
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-shadow: 0 6px 14px rgba(43, 29, 22, 0.22);
+}
+
+.arm__stick {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 120px;
+  height: 10px;
+  border-radius: 999px;
+  background: #3a332e;
+  box-shadow: 0 6px 14px rgba(43, 29, 22, 0.22);
+}
+
+.arm__head {
+  position: absolute;
+  left: 124px;
+  top: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: #b04a2f;
+  border: 2px solid rgba(43, 29, 22, 0.35);
+  box-shadow: 0 6px 14px rgba(43, 29, 22, 0.22);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .vinyl.is-spinning {
+    animation: none;
+  }
+  .arm {
+    transition: none;
+  }
+}

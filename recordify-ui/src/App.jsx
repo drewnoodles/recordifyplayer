@@ -2,6 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 
 const API = "http://localhost:8000";
 
+function Turntable({ coverUrl, isPlaying }) {
+  return (
+    <div className="turntable">
+      <div className={`vinyl ${isPlaying ? "is-spinning" : ""}`}>
+        <div className="vinyl__label">
+          {coverUrl ? (
+  <img src={coverUrl} alt="Album label" />
+) : (
+  <div className="vinyl__fallback">REC</div>
+)}        </div>
+        <div className="vinyl__hole" />
+      </div>
+
+      <div className={`arm ${isPlaying ? "is-on" : ""}`}>
+        <div className="arm__base" />
+        <div className="arm__stick" />
+        <div className="arm__head" />
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [uid, setUid] = useState("");
   const [spotifyUrl, setSpotifyUrl] = useState("");
@@ -103,7 +125,7 @@ function App() {
       buttonDisabled: { opacity: 0.6, cursor: "not-allowed" },
       nowPlayingLayout: {
         display: "grid",
-        gridTemplateColumns: "180px 1fr",
+        gridTemplateColumns: "320px 1fr",
         gap: 14,
         alignItems: "center",
       },
@@ -208,122 +230,110 @@ function App() {
   // simple responsive switch without CSS files:
   const isNarrow = typeof window !== "undefined" && window.innerWidth < 860;
 
-  return (
-    <div style={styles.page}>
-      <div style={styles.container}>
-        <div style={styles.header}>
-          <div>
-            <h1 style={styles.title}>🎵 Recordify Player</h1>
-            <p style={styles.subtitle}>
-              RFID tags → Spotify playback. Live status below.
-            </p>
+ return (
+  <div className="mcm-page">
+    <div className="mcm-container">
+      <div style={styles.header}>
+        <div>
+          <h1 style={styles.title}>Recordify | Record Player for Spotify </h1>
+          <p style={styles.subtitle}>
+            RFID tags → Spotify playback. Live status below.
+          </p>
+        </div>
+        <span style={styles.badge}>{isPlaying ? "▶ Playing" : "⏸ Paused"}</span>
+      </div>
+
+      <div className="mcm-grid">
+        {/* LEFT: Tag Editor */}
+        <div className="mcm-card">
+          <div style={styles.cardTitleRow}>
+            <h2 style={styles.cardTitle}>Tag Editor</h2>
           </div>
-          <span style={styles.badge}>{isPlaying ? "▶ Playing" : "⏸ Paused"}</span>
+
+          <div style={styles.field}>
+            <div style={styles.label}>UID (your RFID tag id)</div>
+            <input
+              style={styles.input}
+              placeholder="e.g. 04A1B2C3D4"
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
+            />
+          </div>
+
+          <div style={{ height: 12 }} />
+
+          <div style={styles.field}>
+            <div style={styles.label}>Spotify URL or URI</div>
+            <input
+              style={styles.input}
+              placeholder="spotify:track:... or https://open.spotify.com/track/..."
+              value={spotifyUrl}
+              onChange={(e) => setSpotifyUrl(e.target.value)}
+            />
+          </div>
+
+          <div style={styles.row}>
+  <button
+    className={`mcm-btn ${saving ? "is-disabled" : ""}`}
+    onClick={saveTag}
+    disabled={saving}
+  >
+    {saving ? "Saving..." : "Save Tag"}
+  </button>
+
+  <button
+    className={`mcm-btn mcm-btn-primary ${playing ? "is-disabled" : ""}`}
+    onClick={playTag}
+    disabled={playing}
+  >
+    {playing ? "Playing..." : "Play Tag"}
+  </button>
+</div>
+
+          <div style={styles.footerHint}>
+            Tip: paste a Spotify track link and hit “Save Tag”, then “Play Tag”.
+          </div>
         </div>
 
-        <div style={isNarrow ? styles.mobileGrid : styles.grid}>
-          {/* LEFT: Tag Editor */}
-          <div style={styles.card}>
-            <div style={styles.cardTitleRow}>
-              <h2 style={styles.cardTitle}>Tag Editor</h2>
-            </div>
-
-            <div style={styles.field}>
-              <div style={styles.label}>UID (your RFID tag id)</div>
-              <input
-                style={styles.input}
-                placeholder="e.g. 04A1B2C3D4"
-                value={uid}
-                onChange={(e) => setUid(e.target.value)}
-              />
-            </div>
-
-            <div style={{ height: 12 }} />
-
-            <div style={styles.field}>
-              <div style={styles.label}>Spotify URL or URI</div>
-              <input
-                style={styles.input}
-                placeholder="spotify:track:... or https://open.spotify.com/track/..."
-                value={spotifyUrl}
-                onChange={(e) => setSpotifyUrl(e.target.value)}
-              />
-            </div>
-
-            <div style={styles.row}>
-              <button
-                style={{
-                  ...styles.button,
-                  ...(saving ? styles.buttonDisabled : {}),
-                }}
-                onClick={saveTag}
-                disabled={saving}
-              >
-                {saving ? "Saving..." : "Save Tag"}
-              </button>
-
-              <button
-                style={{
-                  ...styles.button,
-                  ...styles.buttonPrimary,
-                  ...(playing ? styles.buttonDisabled : {}),
-                }}
-                onClick={playTag}
-                disabled={playing}
-              >
-                {playing ? "Playing..." : "Play Tag"}
-              </button>
-            </div>
-
-            <div style={styles.footerHint}>
-              Tip: paste a Spotify track link and hit “Save Tag”, then “Play Tag”.
-            </div>
+        {/* RIGHT: Now Playing */}
+        <div className="mcm-card">
+          <div style={styles.cardTitleRow}>
+            <h2 style={styles.cardTitle}>Now Playing</h2>
           </div>
 
-          {/* RIGHT: Now Playing */}
-          <div style={styles.card}>
-            <div style={styles.cardTitleRow}>
-              <h2 style={styles.cardTitle}>Now Playing</h2>
-            </div>
+          {item ? (
+            <div style={styles.nowPlayingLayout}>
+              <Turntable coverUrl={item.image_url} isPlaying={isPlaying} />
 
-            {item ? (
-              <div style={styles.nowPlayingLayout}>
-                <div style={styles.artWrap}>
-                  <img
-                    src={item.image_url}
-                    alt="Album cover"
-                    style={styles.art}
-                  />
-                </div>
 
-                <div>
-                  <p style={styles.song}>{item.name}</p>
-                  <p style={styles.artist}>{item.artists}</p>
-                  <p style={styles.album}>{item.album}</p>
+              <div>
+                <p style={styles.song}>{item.name}</p>
+                <p style={styles.artist}>{item.artists}</p>
+                <p style={styles.album}>{item.album}</p>
 
-                  {item.spotify_url ? (
-                    <a
-                      href={item.spotify_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={styles.link}
-                    >
-                      Open in Spotify ↗
-                    </a>
-                  ) : null}
-                </div>
+                {item.spotify_url ? (
+                  <a
+                    href={item.spotify_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={styles.link}
+                  >
+                    Open in Spotify ↗
+                  </a>
+                ) : null}
               </div>
-            ) : (
-              <p style={styles.empty}>
-                Nothing playing right now. Start a song in Spotify or tap “Play
-                Tag”.
-              </p>
-            )}
-          </div>
+            </div>
+          ) : (
+            <p style={styles.empty}>
+              Nothing playing right now. Start a song in Spotify or tap “Play
+              Tag”.
+            </p>
+          )}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default App;
